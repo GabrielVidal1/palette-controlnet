@@ -67,10 +67,10 @@ def hex_to_color(hex):
     return tuple(int(hex[i : i + 2], 16) for i in (0, 2, 4))
 
 
-def hex_string_to_image(hex_string):
+def hex_string_to_image(hex_string, size=(150, 150)):
     """
     for example
     acbdba,cddddd,a599b5,2e2f2f,051014
     """
     colors = [hex_to_color(hex) for hex in hex_string.split(",")]
-    return image_from_palette(colors, size=(150, 150))
+    return image_from_palette(colors, size=size)
