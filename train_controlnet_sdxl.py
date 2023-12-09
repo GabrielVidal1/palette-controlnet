@@ -799,23 +799,20 @@ def prepare_train_dataset(dataset, accelerator):
     )
 
     def preprocess_train(examples):
+        v = random.random()
+
         images = [image.convert("RGB") for image in examples[args.image_column]]
+        images = [rotate_hue(image, v * i) for i, image in enumerate(images)]
+        images[0].save("test.png")
+        images = [image_transforms(image) for image in images]
+
         conditioning_images = [
             image.convert("RGB") for image in examples[args.conditioning_image_column]
         ]
-
-        # Rotate hue of conditioning images
-        v = random.random()
-        images = [rotate_hue(image, v * i) for i, image in enumerate(images)]
         conditioning_images = [
-            rotate_hue(image, v * i) for i, image in enumerate(images)
+            rotate_hue(image, v * i) for i, image in enumerate(conditioning_images)
         ]
-
-        # Save images for debugging
-        images[0].save("test.png")
         conditioning_images[0].save("test2.png")
-
-        images = [image_transforms(image) for image in images]
         conditioning_images = [
             image for image in conditioning_image_transforms(conditioning_images)
         ]

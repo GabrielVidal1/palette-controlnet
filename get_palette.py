@@ -2,10 +2,11 @@ from typing import Callable
 from sklearn.cluster import KMeans
 
 import numpy as np
+from PIL import Image
 from palette_to_image import debug_palette, image_from_palette
 
 
-def main_colors_from_palette(img):
+def main_colors_from_palette(img: Image.Image):
     width, _ = img.size
 
     colors = []
@@ -45,7 +46,7 @@ class ExtractPalette(Callable):
         self.num_colors = num_colors
         self.from_palette = from_palette
 
-    def __call__(self, img):
+    def __call__(self, img: Image.Image):
         if self.from_palette:
             return main_colors_from_palette(img)
         else:

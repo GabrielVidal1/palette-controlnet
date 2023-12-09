@@ -23,7 +23,7 @@ def rotate_hue(image, hue_rotation):
     hue_rotation = int(hue_rotation * 255)
 
     # Rotate the hue channel (0)
-    hsv_data[..., 0] = (hsv_data[..., 0] + hue_rotation) % 256
+    hsv_data[..., 0] = (hsv_data[..., 0] + hue_rotation % 256 + 256) % 256
 
     # Convert the HSV data back to an image and then convert it to RGB
     new_image = Image.fromarray(hsv_data, "HSV").convert("RGB")
