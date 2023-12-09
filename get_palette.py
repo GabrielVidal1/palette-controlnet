@@ -46,9 +46,8 @@ class ExtractPalette(Callable):
         self.num_colors = num_colors
         self.from_palette = from_palette
 
-    def __call__(self, images: Image.Image):
-        for img in images:
-            yield self.extract(img)
+    def __call__(self, image: Image.Image):
+        return self.extract(image)
 
     def extract(self, img: Image.Image):
         if self.from_palette:
@@ -63,10 +62,6 @@ class Palettify(Callable):
         self.size = size
 
     def __call__(self, colors):
-        for color in colors:
-            yield self.palettify(color)
-
-    def palettify(self, colors):
         return image_from_palette(colors, size=self.size)
 
 

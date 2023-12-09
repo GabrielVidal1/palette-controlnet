@@ -803,16 +803,17 @@ def prepare_train_dataset(dataset, accelerator):
 
         images = [image.convert("RGB") for image in examples[args.image_column]]
         images = [rotate_hue(image, v * i) for i, image in enumerate(images)]
-        images[0].save("test.png")
+        # images[0].save("test.png")
         images = [image_transforms(image) for image in images]
 
         conditioning_images = [
             image.convert("RGB") for image in examples[args.conditioning_image_column]
         ]
-        conditioning_images = [
-            rotate_hue(image, v * i) for i, image in enumerate(conditioning_images)
-        ]
-        conditioning_images[0].save("test2.png")
+        conditioning_images = list(
+            [rotate_hue(image, v * i) for i, image in enumerate(conditioning_images)]
+        )
+        print(conditioning_images)
+        # conditioning_images[0].save("test2.png")
         conditioning_images = [
             image for image in conditioning_image_transforms(conditioning_images)
         ]
