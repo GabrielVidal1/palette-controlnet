@@ -46,7 +46,11 @@ class ExtractPalette(Callable):
         self.num_colors = num_colors
         self.from_palette = from_palette
 
-    def __call__(self, img: Image.Image):
+    def __call__(self, images: Image.Image):
+        for img in images:
+            yield self.extract(img)
+
+    def extract(self, img: Image.Image):
         if self.from_palette:
             return main_colors_from_palette(img)
         else:
