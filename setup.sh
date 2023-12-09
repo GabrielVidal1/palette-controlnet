@@ -1,6 +1,4 @@
-git clone https://github.com/huggingface/diffusers
-cd diffusers
-pip install -e .
+pip install git+https://github.com/huggingface/diffusers.git
 
 cd ..
 
