@@ -4,9 +4,10 @@ export OUTPUT_DIR="./output"
 accelerate launch train_controlnet_sdxl.py \
  --pretrained_model_name_or_path=$MODEL_DIR \
  --output_dir=$OUTPUT_DIR \
- --dataset_name="laion/dalle-3-dataset" \
+ --dataset_name="GabrielVidal/dalle-3-palette" \
  --image_column="image" \
- --caption_column="caption" \
+ --caption_column="text" \
+ --conditioning_image_column="palette" \
  --mixed_precision="fp16" \
  --resolution=1024 \
  --learning_rate=1e-5 \

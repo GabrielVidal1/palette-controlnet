@@ -4,6 +4,26 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
+def debug_palette(main_colors, size=(150, 150)):
+    """
+    Create an image that displays the palette of colors provided.
+    """
+    img = Image.new("RGB", size)
+    width = int(size[0] / len(main_colors))
+    for i, color in enumerate(main_colors):
+        img.paste(
+            color,
+            (
+                int(i * width),
+                0,
+                int((i + 1) * width),
+                size[1],
+            ),
+        )
+
+    return img
+
+
 def image_from_palette_squares(main_colors, size=(150, 150), square_by_side=4):
     squares = [i**2 for i in range(0, 8)]
     if i := squares.index(len(main_colors)) == -1:

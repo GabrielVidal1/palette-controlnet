@@ -53,7 +53,7 @@ from diffusers.optimization import get_scheduler
 from diffusers.utils import check_min_version, is_wandb_available, make_image_grid
 from diffusers.utils.import_utils import is_xformers_available
 
-from get_palette import extract_colors, image_from_palette, Palettify
+from get_palette import ExtractPalette, Palettify
 
 if is_wandb_available():
     import wandb
@@ -776,7 +776,7 @@ def encode_prompt(
 
 
 def prepare_train_dataset(dataset, accelerator):
-    common_transforms = transforms.Compose(
+    image_transforms = transforms.Compose(
         [
             transforms.Resize(
                 args.resolution, interpolation=transforms.InterpolationMode.BILINEAR
@@ -784,11 +784,6 @@ def prepare_train_dataset(dataset, accelerator):
             transforms.CenterCrop(args.resolution),
             transforms.ColorJitter(hue=0.5),
             transforms.RandomHorizontalFlip(p=0.5),
-        ]
-    )
-
-    image_transforms = transforms.Compose(
-        [
             transforms.ToTensor(),
             transforms.Normalize([0.5], [0.5]),
         ]
@@ -796,17 +791,20 @@ def prepare_train_dataset(dataset, accelerator):
 
     conditioning_image_transforms = transforms.Compose(
         [
-            Palettify(),
+            ExtractPalette(),
+            Palettify(num_colors=5, size=(args.resolution, args.resolution)),
             transforms.ToTensor(),
         ]
     )
 
     def preprocess_train(examples):
         images = [image.convert("RGB") for image in examples[args.image_column]]
-        images = [common_transforms(image) for image in images]
-
-        conditioning_images = [conditioning_image_transforms(image) for image in images]
         images = [image_transforms(image) for image in images]
+
+        conditioning_images = [
+            conditioning_image_transforms(image)
+            for image in examples[args.conditioning_image_column]
+        ]
 
         examples["pixel_values"] = images
         examples["conditioning_pixel_values"] = conditioning_images

@@ -1,9 +1,19 @@
-from math import ceil
 from typing import Callable
 from sklearn.cluster import KMeans
 
 import numpy as np
-from palette_to_image import image_from_palette
+from palette_to_image import debug_palette, image_from_palette
+
+
+def palette_from_debug_image(img):
+    width, _ = img.size
+
+    colors = []
+    for x in range(width):
+        color = img.getpixel((x, 0))
+        if color not in colors:
+            colors.append(color)
+    return colors
 
 
 def extract_colors(image, num_colors=6):
@@ -26,22 +36,24 @@ def extract_colors(image, num_colors=6):
 
     counts = np.bincount(labels)
     colors = colors[np.argsort(counts)[::-1]]
-    print("colors", colors)
+    # print("colors", colors)
     return [tuple(colors[i].astype(int)) for i in range(len(colors))]
 
 
-class Palettify(Callable):
+class ExtractPalette(Callable):
     def __init__(self, num_colors=6):
         self.num_colors = num_colors
 
     def __call__(self, img):
-        w, h = img.size
-        colors = extract_colors(img, self.num_colors)
+        return palette_from_debug_image(img)
 
-        return image_from_palette(colors, size=(w, h))
 
-    def __repr__(self):
-        return "custom augmentation"
+class Palettify(Callable):
+    def __init__(self, num_colors=6, size=(150, 150)):
+        self.num_colors = num_colors
+
+    def __call__(self, colors):
+        return image_from_palette(colors, size=size)
 
 
 def hex_to_color(hex):
@@ -54,4 +66,4 @@ def hex_string_to_image(hex_string, size=(150, 150)):
     acbdba,cddddd,a599b5,2e2f2f,051014
     """
     colors = [hex_to_color(hex) for hex in hex_string.split(",")]
-    return image_from_palette(colors, size=size)
+    return debug_palette(colors, size=size)
