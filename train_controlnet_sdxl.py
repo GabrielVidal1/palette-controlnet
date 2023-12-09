@@ -812,10 +812,9 @@ def prepare_train_dataset(dataset, accelerator):
         conditioning_images = list(
             [rotate_hue(image, v * i) for i, image in enumerate(conditioning_images)]
         )
-        print(conditioning_images)
         # conditioning_images[0].save("test2.png")
         conditioning_images = [
-            image for image in conditioning_image_transforms(conditioning_images)
+            conditioning_image_transforms(image) for image in conditioning_images
         ]
 
         examples["pixel_values"] = images
