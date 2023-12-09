@@ -3,6 +3,7 @@ export OUTPUT_DIR="./output"
 
 accelerate launch train_controlnet_sdxl.py \
  --pretrained_model_name_or_path=$MODEL_DIR \
+ --pretrained_vae_model_name_or_path="madebyollin/sdxl-vae-fp16-fix" \
  --output_dir=$OUTPUT_DIR \
  --dataset_name="GabrielVidal/dalle-3-palette" \
  --image_column="image" \
@@ -15,8 +16,9 @@ accelerate launch train_controlnet_sdxl.py \
  --validation_image "./palette1.png" "./palette2.png" "./palette3.png"   \
  --validation_prompt "tree house on the beach" "cat warrior" "screaming dogs illustration" \
  --validation_steps=50 \
- --pretrained_vae_model_name_or_path="madebyollin/sdxl-vae-fp16-fix" \
  --train_batch_size=16 \
  --gradient_accumulation_steps=4 \
  --report_to="wandb" \
- --seed=42 
+ --tracker_project_name="controlnet-palette" \
+ --seed=42 \
+ --push_to_hub
