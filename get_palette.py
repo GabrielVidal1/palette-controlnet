@@ -63,6 +63,10 @@ class Palettify(Callable):
         self.size = size
 
     def __call__(self, colors):
+        for color in colors:
+            yield self.palettify(color)
+
+    def palettify(self, colors):
         return image_from_palette(colors, size=self.size)
 
 
