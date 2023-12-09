@@ -5,7 +5,7 @@ import numpy as np
 from palette_to_image import debug_palette, image_from_palette
 
 
-def palette_from_debug_image(img):
+def main_colors_from_palette(img):
     width, _ = img.size
 
     colors = []
@@ -41,19 +41,24 @@ def extract_colors(image, num_colors=6):
 
 
 class ExtractPalette(Callable):
-    def __init__(self, num_colors=6):
+    def __init__(self, num_colors=6, from_palette=False):
         self.num_colors = num_colors
+        self.from_palette = from_palette
 
     def __call__(self, img):
-        return palette_from_debug_image(img)
+        if self.from_palette:
+            return main_colors_from_palette(img)
+        else:
+            return extract_colors(img, num_colors=self.num_colors)
 
 
 class Palettify(Callable):
     def __init__(self, num_colors=6, size=(150, 150)):
         self.num_colors = num_colors
+        self.size = size
 
     def __call__(self, colors):
-        return image_from_palette(colors, size=size)
+        return image_from_palette(colors, size=self.size)
 
 
 def hex_to_color(hex):

@@ -791,7 +791,7 @@ def prepare_train_dataset(dataset, accelerator):
 
     conditioning_image_transforms = transforms.Compose(
         [
-            ExtractPalette(),
+            ExtractPalette(num_colors=5, from_palette=True),
             Palettify(num_colors=5, size=(args.resolution, args.resolution)),
             transforms.ToTensor(),
         ]
