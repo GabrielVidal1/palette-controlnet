@@ -54,6 +54,7 @@ from diffusers.utils import check_min_version, is_wandb_available, make_image_gr
 from diffusers.utils.import_utils import is_xformers_available
 
 from get_palette import ExtractPalette, Palettify
+from utils import rotate_hue
 
 if is_wandb_available():
     import wandb
@@ -783,7 +784,6 @@ def prepare_train_dataset(dataset, accelerator):
                 args.resolution, interpolation=transforms.InterpolationMode.BILINEAR
             ),
             transforms.CenterCrop(args.resolution),
-            transforms.ColorJitter(hue=0.5),
             transforms.RandomHorizontalFlip(p=0.5),
             transforms.ToTensor(),
             transforms.Normalize([0.5], [0.5]),
@@ -802,10 +802,17 @@ def prepare_train_dataset(dataset, accelerator):
         images = [image.convert("RGB") for image in examples[args.image_column]]
         images = [image_transforms(image) for image in images]
 
+        v = random.random()
+
         conditioning_images = [
-            conditioning_image_transforms(image)
+            conditioning_image_transforms(image.convert("RGB"))
             for image in examples[args.conditioning_image_column]
         ]
+        images = [rotate_hue(image, v * i) for i, image in enumerate(images)]
+        conditioning_images = [rotate_hue(image, v * i) for i, image in enumerate(images)]
+
+        images[0].save("test.png")
+        conditioning_images[0].save("test2.png")
 
         examples["pixel_values"] = images
         examples["conditioning_pixel_values"] = conditioning_images
